@@ -7,8 +7,8 @@ int main(void)
 	cv::Mat img1;
 	cv::Mat img2;
 
-	img1 = cv::imread("C:\\Users\\plonc\\OneDrive\\Documents\\src\\github_mio\\siftDetector\\uch010a.jpg");
-	img2 = cv::imread("C:\\Users\\plonc\\OneDrive\\Documents\\src\\github_mio\\siftDetector\\uch010b.jpg");
+	img1 = cv::imread("uch010a.jpg");
+	img2 = cv::imread("uch010b.jpg");
 
 	detector.addImg(img1, "case");
 	detector.build();
@@ -24,7 +24,7 @@ int main(void)
 		std::cout << "  " << d.tx << " " << d.ty << " " << d.label << std::endl;
 	}
 
-	cv::imwrite("C:\\Users\\plonc\\OneDrive\\Documents\\src\\github_mio\\siftDetector\\imdraw.jpg", imdraw);
+	cv::imwrite("imdraw.jpg", imdraw);
 
 	return 0;
 }
