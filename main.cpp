@@ -21,7 +21,7 @@ int main(void)
 	for (size_t i = 0; i < detections.size(); i++)
 	{
 		Detection& d = detections[i];
-		std::cout << "  " << d.tx << " " << d.ty << " " << d.label << std::endl;
+		std::cout << "  " << d.cx << " " << d.cy << " " << d.label << std::endl;
 	}
 
 	cv::imwrite("imdraw.jpg", imdraw);
