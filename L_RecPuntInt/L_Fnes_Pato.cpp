@@ -763,7 +763,7 @@ void L_test_for_aligned_malloc(size_t blo)
 	if (alineado)
 		printf("new[] devuelve bloques alineados\n");
 	else
-		printf("new[] no devuelve bloques alineados (blo=%d delta = %d)\n", blo, delta);
+		printf("new[] no devuelve bloques alineados (blo=%ld delta = %ld)\n", blo, delta);
 }
 
 void L_ArgcArgv::define(const char *cmdList) // Los ° permiten especificar espacios en un mismo argumento
@@ -1224,13 +1224,13 @@ void L_HuffmanEncoder::test(bool soloCompr)
 			}
 		}
 		if ( i % (nint / 100) == 0)
-			printf("\rAvance test: %ld%% (%ld compresiones/descompresiones)   ", 100*i/nint, i);
+			printf("\rAvance test: %ld%% (%d compresiones/descompresiones)   ", 100*i/nint, i);
 	}
 	printf("\n");
 	entrop /= nint;
 	t2 = L_TIME();
 	printf("L_ArbolHuffman paso la test con %ld intentos, %.2f [fps]\n",nint, nint/(t2-t1));
-	printf("Compresion %.3f%% (length (%ld-%ld))\n", 100*ratio/nint, L1, L2);
+	printf("Compresion %.3f%% (length (%d-%d))\n", 100*ratio/nint, L1, L2);
 	printf("Entropia real: %.2f[bits]\n", entrop);
 	printf("Entropia equivalente compresion: %.2f[bits]\n", 8*ratio/nint);
 }
@@ -8984,7 +8984,6 @@ void L_Matrix::repairRangeValues(double limInf, double limMax)
 				operator()(i,j) = limMax;
 		}
 }
-
 
 double L_Matrix::covarianceThroughJacobianTest(const std::vector<int> &a, const std::vector<int> &b, const L_Matrix &J, const L_Matrix *Ji, double umbral, bool *aceptado, std::vector<L_StaticMatrix<3,3> > *cov3x3, L_Matrix *rot)
 {

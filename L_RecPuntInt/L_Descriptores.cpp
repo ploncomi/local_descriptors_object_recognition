@@ -5581,7 +5581,7 @@ void L_TransfPuntInt2DListaPtr::escribeResumen(FILE *fp)
 			strcpy(tipo,"???");
 			break;
 		}
-		fprintf(fp, "vot:%d punt=%.4f obj=%d (%.1f %.1f)--(%.1f %.1f) R:%d tipo:%s\n", ptr->c->calL.size(), ptr->c->car.punt,
+		fprintf(fp, "vot:%ld punt=%.4f obj=%d (%.1f %.1f)--(%.1f %.1f) R:%d tipo:%s\n", ptr->c->calL.size(), ptr->c->car.punt,
 			ptr->c->calL.root->c.dRef->nobj,
 			p1.x0, p1.y0, p2.x0, p2.y0,
 			(int)ptr->c->car.ransac, tipo);

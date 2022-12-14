@@ -780,16 +780,18 @@ public:
 		std::vector<L_Descriptor *> dest_tmp;
 		std::vector<double> dist_tmp;
 		int i;
-		dest_tmp.resize(2);
-		dist_tmp.resize(2);
+		dest_tmp.resize(n);
+		dist_tmp.resize(n);
 		for (i=0; i<orig.size(); i++)
 		{
-			dest_tmp.elem = &dest[n*i];
-			dist_tmp.elem = &dist[n*i];
 			findNearest_anyObject(orig[i], n, dest_tmp, dist_tmp);
+			for (int k=0; k<n; k++)
+			{
+				dest[n*i+k] = dest_tmp[k];
+				dist[n*i+k] = dist_tmp[k];
+			}
+
 		}
-		dest_tmp.elem = NULL;
-		dist_tmp.elem = NULL;
 	}
 	L_ParamManagerLocal *pideParams() {return &paramsBusArr;}
 };

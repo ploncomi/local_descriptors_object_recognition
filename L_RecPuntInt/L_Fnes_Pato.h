@@ -151,7 +151,7 @@ typedef ATL::CImage ATL_CImage; // For enabling ATL: select Project -> X Propert
 #ifdef __COMPAT_IPLIMAGE__ // Optional interface for OpenCV
 #include "cv.h"
 #include "highgui.h"
-#endif#endif
+#endif
 
 #ifdef __COMPAT_CVMAT__
 #include <opencv2/opencv.hpp>
@@ -1195,19 +1195,19 @@ public:
 
 	L_VectMap(std::vector<T> &vect) : v(vect) { }
 
-	void setValueElementWise(const T &zero) {std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = zero;}
+	void setValueElementWise(const T &zero) {typename std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = zero;}
 	void setValueFromRange(const T &inic, const T&delta, const T &final) // arr=inic:delta:final
 		{T val; typename V::size_type i; v.resize((int)((final-inic)/delta)+1); val=inic; for (i=0; i<v.size(); i++) {v[i]=val; val+=delta;}}
 
-	void sum_to_each_element(const T &e) {std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] +=e;}
-	void subtract_to_each_element(const T &e) {std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] -= e;}
-	void multiply_to_each_element(double factor) {std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] *= factor;}
+	void sum_to_each_element(const T &e) {typename std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] +=e;}
+	void subtract_to_each_element(const T &e) {typename std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] -= e;}
+	void multiply_to_each_element(double factor) {typename std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] *= factor;}
 
-	void sumElement(const std::vector<T> &other, const T &e) {v.resize(other.size()); std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = other[i] + e;}
-	void subtractElement(const std::vector<T> &other, const T &e) {v.resize(other.size()); std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = other[i] - e;}
-	void sum(const std::vector<T> &first, const std::vector<T> &second) {throw_L_ArgException_if(first.size()!=second.size(), "sumaDe"); v.resize(first.size()); std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = first[i] + second[i];}
-	void subtract(const std::vector<T> &first, const std::vector<T> &second) {throw_L_ArgException_if(first.size()!=second.size(), "restaDe"); v.resize(first.size()); std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = first[i] - second[i];}
-	void mult(const std::vector<T> &first, const std::vector<T> &second) {throw_L_ArgException_if(first.size()!=second.size(),"multDe"); v.resize(first.size()); std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = first[i] * second[i];}
+	void sumElement(const std::vector<T> &other, const T &e) {v.resize(other.size()); typename std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = other[i] + e;}
+	void subtractElement(const std::vector<T> &other, const T &e) {v.resize(other.size()); typename std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = other[i] - e;}
+	void sum(const std::vector<T> &first, const std::vector<T> &second) {throw_L_ArgException_if(first.size()!=second.size(), "sumaDe"); v.resize(first.size()); typename std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = first[i] + second[i];}
+	void subtract(const std::vector<T> &first, const std::vector<T> &second) {throw_L_ArgException_if(first.size()!=second.size(), "restaDe"); v.resize(first.size()); typename std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = first[i] - second[i];}
+	void mult(const std::vector<T> &first, const std::vector<T> &second) {throw_L_ArgException_if(first.size()!=second.size(),"multDe"); v.resize(first.size()); typename std::vector<T>::size_type i; for (i=0; i<v.size(); i++) v[i] = first[i] * second[i];}
 
 	void fwriteArr_POD(FILE *fp)  // Only use for POD elements (no pointers, no allocations, no virtual functions)
 	{
@@ -4415,6 +4415,20 @@ public:
 template <class T, bool POD = true>  // T must be a POD object
 class L_MatrixBaseWidthStep : public L_MatrixBaseWidthStepNonAllocator<T>
 {
+public:
+	typedef typename L_MatrixBaseWidthStepNonAllocator<T>::size_type size_type;
+	using L_MatrixBaseWidthStepNonAllocator<T>::data;
+	using L_MatrixBaseWidthStepNonAllocator<T>::iniptr;
+	using L_MatrixBaseWidthStepNonAllocator<T>::endptr;
+	using L_MatrixBaseWidthStepNonAllocator<T>::li;
+	using L_MatrixBaseWidthStepNonAllocator<T>::ly;
+	using L_MatrixBaseWidthStepNonAllocator<T>::lj;
+	using L_MatrixBaseWidthStepNonAllocator<T>::lx;
+	using L_MatrixBaseWidthStepNonAllocator<T>::lxStep;
+	using L_MatrixBaseWidthStepNonAllocator<T>::ljStep;
+	using L_MatrixBaseWidthStepNonAllocator<T>::operator();
+
+
 private:
 	L_MatrixBaseWidthStep(const L_MatrixBaseWidthStep &other);
 	void operator=(const L_MatrixBaseWidthStep &other);
@@ -4595,7 +4609,8 @@ public:
 
 	bool copyReferenceIn(L_MatrixBaseWidthStep<T> &other)
 	{
-		other.reallocate_fc_ext(li, lj, &_elem[0][0], lj);
+		other.reallocate_fc_ext(li, lj, &this->_elem[0][0], lj);
+		return true;
 	}
 
 	void OP_assign(const L_MatrixBaseWidthStep<T> &other)
@@ -4685,6 +4700,24 @@ public:
 template <class T, bool POD = true>  // T must be a POD object
 class L_MatrixBase : public L_MatrixBaseNonAllocator<T>
 {
+public:
+  typedef typename L_MatrixBaseNonAllocator<T>::value_type value_type;
+  typedef typename L_MatrixBaseNonAllocator<T>::size_type size_type;
+  typedef typename L_MatrixBaseNonAllocator<T>::size_type2 size_type2;
+  typedef typename L_MatrixBaseNonAllocator<T>::iterator iterator;
+  typedef typename L_MatrixBaseNonAllocator<T>::const_iterator const_iterator;
+  using L_MatrixBaseNonAllocator<T>::data;
+  using L_MatrixBaseNonAllocator<T>::begin;
+  using L_MatrixBaseNonAllocator<T>::end;
+  using L_MatrixBaseNonAllocator<T>::rows;
+  using L_MatrixBaseNonAllocator<T>::cols;
+  using L_MatrixBaseNonAllocator<T>::size;
+  using L_MatrixBaseNonAllocator<T>::iniptr;
+  using L_MatrixBaseNonAllocator<T>::endptr;
+  using L_MatrixBaseNonAllocator<T>::li;
+  using L_MatrixBaseNonAllocator<T>::lj;
+  using L_MatrixBaseNonAllocator<T>::operator();
+
 private:
 	L_MatrixBase(const L_MatrixBase &other);
 	void operator=(const L_MatrixBase &other);
@@ -4853,7 +4886,7 @@ public:
 	void copyTo(L_MatrixBase<T> &other) const
 	{
 		other.reallocate_fc(li, lj);
-		if (ljStep == other.ljStep)
+		if (this->ljStep == other.ljStep)
 			memcpy(other.begin(), begin(), li*lj*sizeof(T));
 		else
 		{
@@ -4865,12 +4898,13 @@ public:
 	bool copyReferenceIn(L_MatrixBase<T> &other)
 	{
 		other.reallocate_fc_ext(li, lj, begin(), lj);
+		return true;
 	}
 
 	void OP_assign(const L_MatrixBase<T> &other)
 	{
 		reallocate_fc(other.li, other.lj);
-		if (other.ljStep == ljStep)
+		if (other.ljStep == this->ljStep)
 			memcpy(begin(), other.begin(), li*lj*sizeof(T));
 		else
 		{
@@ -4907,6 +4941,19 @@ public:
 
 class L_ImageGrayFloat : public L_MatrixBaseWidthStep<float>
 {
+public:
+  typedef typename L_MatrixBaseWidthStep<float>::size_type size_type;
+  using L_MatrixBaseWidthStep<float>::data;
+  using L_MatrixBaseWidthStep<float>::iniptr;
+  using L_MatrixBaseWidthStep<float>::endptr;
+  using L_MatrixBaseWidthStep<float>::li;
+  using L_MatrixBaseWidthStep<float>::ly;
+  using L_MatrixBaseWidthStep<float>::lj;
+  using L_MatrixBaseWidthStep<float>::lx;
+  using L_MatrixBaseWidthStep<float>::lxStep;
+  using L_MatrixBaseWidthStep<float>::ljStep;
+  using L_MatrixBaseWidthStep<float>::operator();
+
 private:
 	L_ImageGrayFloat(const L_ImageGrayFloat &other);
 public:
@@ -5679,179 +5726,6 @@ public:
 #define L_StaticMatrix_invert2x2(Mret,M) {double idet373 = 1/((M)(0,0)*(M)(1,1)-(M)(0,1)*(M)(1,0)); (Mret)(0,0) = (M)(1,1)*idet373; (Mret)(0,1)=-(M)(0,1)*idet373; (Mret)(1,0)=-(M)(1,0)*idet373; (Mret)(1,1)=M(0,0)*idet373;}
 void L_invertMe(double *elem, int li, int lj);
 
-template <int LI, int LJ>  // Esta tipo de matriz conviene para matrices pequenas, se evita la memoria dinamica
-class L_StaticMatrix  // Sin embargo, para matrices muy grandes (>10x10) es poco eficiente
-{
-public:
-#ifdef L_BRACKET_LEVEL_DEBUG
-	L_ptrME<LI,LJ> _elem;
-#else
-	double _elem[LI][LJ];
-#endif
-	L_StaticMatrix() {} // No necesita constructor de copia ni operator= ni destructor
-
-	//   Dado que estas matrices suelen ser pequenas, para maximizar
-	// la velocidad se deben usar las macros listadas arriba.
-
-	typedef double * iterator;
-	typedef const double * const_iterator;
-	typedef int size_type;
-	typedef size_t size_type2;
-
-	double *data() {return &_elem[0][0];}
-	double *begin() {return &_elem[0][0];}
-	double *end() {return &(_elem[0][0]) + rows()*cols();}
-
-	size_type rows() const {return LI;}
-	size_type cols() const {return LJ;}
-	size_type2 size() const {return rows()*cols()*sizeof(double);}
-
-	const double *data() const {return &_elem[0][0];}
-	const double *begin() const {return &_elem[0][0];}
-	const double *end() const {return &(_elem[0][0]) + rows()*cols();}
-
-	double &operator()(int i, int j) {return _elem[i][j];}
-	const double &operator()(int i, int j) const {return _elem[i][j];}
-
-	L_CommaListParser<double,LI*LJ> defineCommas() {return L_CommaListParser<double,LI*LJ>(&(elem[0][0]));}
-
-	double &elem_deb(int i, int j) {throw_L_ArgException_if(i<0 || j<0 || i>=rows() || j>=cols() , "L_StaticMatrix::elem_deb() : indexes fuera de la matriz"); return _elem[i][j];}
-
-	void swap(L_StaticMatrix<LI,LJ> &other) {L_StaticMatrix<LI,LJ> t = other; other = *this; *this = t;}
-
-	bool inverseOf(const L_StaticMatrix &other) {*this = other; return invertMe();}
-
-	void copyOn(L_Matrix &m) {m.conservativeResize(LI,LJ); for (int i=0; i<LI; i++) for (int j=0; j<LJ; j++) m(i,j) = (*this)(i,j);}
-
-	bool invertMe()  // Tal vez la saque
-	{
-		int i, j, c;
-		double factor;
-		double temp;
-		throw_L_ArgException_if(rows()!=cols(), "L_StaticMatrix::invertMe()");
-		// Crear matriz unitaria other
-		L_StaticMatrix<LI,LJ> other;
-		for (i=0; i<rows(); i++)
-			for (j=0; j<cols(); j++)
-				other._elem[i][j] = (i==j);
-
-		for (c=0; c<cols(); c++) // Limpiar columna c
-		{
-			if (_elem[c][c]==0) // Diagonal con zero, intercambiar por other fila mas abajo que c
-			{
-				for (i=c+1; i<rows(); i++) // Encontrar fila i con _elemento != 0 en la columna c
-					if (_elem[i][c]!=0)
-						break;
-				if (i == rows()) // fila i solo contiene _elementos zero para j>=c
-					return false;
-				for (j=0; j<c; j++) // intercambiar fila c por fila i. Notar que _elem[i][j] = 0 para j<c
-				{
-					temp = other._elem[i][j];
-					other._elem[i][j]=other._elem[c][j];
-					other._elem[c][j] = temp;
-				}
-				for (; j<cols(); j++) // intercambiar
-				{
-					temp = other._elem[i][j];
-					other._elem[i][j]=other._elem[c][j];
-					other._elem[c][j] = temp;
-					temp = _elem[i][j];
-					_elem[i][j]=_elem[c][j];
-					_elem[c][j] = temp;
-				}
-			}
-			// Amplificar fila c para que quede con 1 en la diagonal
-			factor = 1 / _elem[c][c];
-			for (j=0; j<c; j++)
-			{
-				other._elem[c][j]*=factor;
-			}
-			for (; j<cols(); j++)
-			{
-				_elem[c][j]*=factor;
-				other._elem[c][j]*=factor;
-			}
-			// Restarla a las otras filas para dejar la columna c "unitaria"
-			for (i=0; i<cols(); i++)
-			{
-				if (i==c)
-					continue;
-				factor = -_elem[i][c];
-				for (j=0; j<c; j++)
-					other._elem[i][j]+=factor*other._elem[c][j];
-				for (; j<cols(); j++)
-				{
-					_elem[i][j]+=factor*_elem[c][j];
-					other._elem[i][j]+=factor*other._elem[c][j];
-				}
-			}
-		}
-		// La inversa esta en other
-		for (i=0; i<rows(); i++)
-			for (j=0; j<cols(); j++)
-				_elem[i][j] = other._elem[i][j];
-		return true;
-	}
-
-	void print(const char *name, FILE *fp=stdout) const
-	{
-		L_String str;
-		L_String str2;
-		int lar=0;
-		int i, j;
-		bool imprNom=false;
-
-		if (name!=NULL)
-		{
-			lar=(int)( strlen(name)+3 );
-			str.resize(lar+1);
-			str2.resize(lar+1);
-			strcpy(str.data(), name);
-			strcat(str.data(), " = ");
-			for (i=0; i<lar; i++)
-				str2[i]=' ';
-			str2[lar]=0;
-		}
-
-		for (i=0; i<rows(); i++)
-		{
-			if (str.size()!=NULL)
-			{
-				if (imprNom==false && i>=rows()/2)
-				{
-					fprintf(fp, "%s", str.c_str());
-					imprNom=true;
-				}
-				else
-					fprintf(fp, "%s", str2.c_str());
-			}
-			fprintf(fp,"[");
-			for (j=0; j<cols(); j++)
-				fprintf(fp, "%+.3g  ", _elem[i][j]);
-			fprintf(fp,"]\n");
-		}
-		fprintf(fp,"\n");
-	}
-
-	void printMatlabFormat(FILE *fp, const char *name) const
-	{
-		int i, j;
-		fprintf(fp, "%s = [", name);
-		for (i=0; i<rows(); i++)
-		{
-			for (j=0; j<cols(); j++)
-			{
-				if (elem[i][j] == elem[i][j])
-					fprintf(fp, "%.10g, ", elem[i][j]);
-				else
-					fprintf(fp, "NaN, ");
-			}
-			fprintf(fp,";");
-		}
-		fprintf(fp,"];\n");
-	}
-};
-
 // Contenedor para expresiones matematicas con matrices
 // DEBE TENER TAMANO CERO, es decir, es solo una interfaz
 
@@ -5883,6 +5757,10 @@ public:
 
 #define L_Matrix_OP_amplify(M,val) {L_Matrix_checkIfNoNULL(M); L_StaticMatrix_OP_amplifica(M,val);}
 
+
+template <int LI, int LJ>  // Esta tipo de matriz conviene para matrices pequenas, se evita la memoria dinamica
+class L_StaticMatrix;
+
 // Lo ideal seria usar __m128d para hacer los calculos...
 // Los expression templates son muy complicados para usarlos aca...
 
@@ -5892,6 +5770,16 @@ class L_Matrix : public L_MatrixBase<double>
 : public L_MatrizExpr<L_Matrix>
 #endif
 {
+public:
+  typedef typename L_MatrixBase<double>::size_type size_type;
+  using L_MatrixBase<double>::data;
+  using L_MatrixBase<double>::iniptr;
+  using L_MatrixBase<double>::endptr;
+  using L_MatrixBase<double>::li;
+  using L_MatrixBase<double>::lj;
+  using L_MatrixBase<double>::operator();
+
+
 private:
 	L_Matrix(const L_Matrix &other);
 public:
@@ -5945,7 +5833,7 @@ public:
 	void concatenateSubMatrices(int ni, int nj, const L_Matrix *m00, ...); // Forma la matriz a partir de ni x nj submatrices
 	//void separarEnSubMatrices(int ni, int nj, L_Matrix *m00, ...); // Forma la matriz a partir de ni x nj submatrices
 	//void copyVectorFrom(const std::vector<double> &vector) {reallocate(vector.size(), 1); for (int i=0; i<(int)vector.size(); i++) operator()(i,0) = vector[i];}
-	void copyVectorFrom(const std::vector<double> &vector) {reallocate((size_type)vector.size(), 1); for (std::vector<double>::size_type i=0; i<vector.size(); i++) operator()((size_type)i,0) = vector[i];}
+	void copyVectorFrom(const std::vector<double> &vector) {reallocate((size_type)vector.size(), 1); for (typename std::vector<double>::size_type i=0; i<vector.size(); i++) operator()((size_type)i,0) = vector[i];}
 	void copyVectorTo(std::vector<double> &vector) {vector.resize(li); for (size_type i=0; i<(size_type)vector.size(); i++) vector[i] = operator()(i,0);}
 	//void copyVectorTo(std::vector<double> &vector) {vector.resize(li); for (int i=0; i<(int)vector.size(); i++) vector[i] = operator()(i,0);}
 
@@ -6228,6 +6116,180 @@ private:
 	static void Jacobi_Cyclic_Method(double *valpr, double *vectpr, double *A, int n);
 };
 
+
+
+template <int LI, int LJ>  // Esta tipo de matriz conviene para matrices pequenas, se evita la memoria dinamica
+class L_StaticMatrix  // Sin embargo, para matrices muy grandes (>10x10) es poco eficiente
+{
+public:
+#ifdef L_BRACKET_LEVEL_DEBUG
+	L_ptrME<LI,LJ> _elem;
+#else
+	double _elem[LI][LJ];
+#endif
+	L_StaticMatrix() {} // No necesita constructor de copia ni operator= ni destructor
+
+	//   Dado que estas matrices suelen ser pequenas, para maximizar
+	// la velocidad se deben usar las macros listadas arriba.
+
+	typedef double * iterator;
+	typedef const double * const_iterator;
+	typedef int size_type;
+	typedef size_t size_type2;
+
+	double *data() {return &_elem[0][0];}
+	double *begin() {return &_elem[0][0];}
+	double *end() {return &(_elem[0][0]) + rows()*cols();}
+
+	size_type rows() const {return LI;}
+	size_type cols() const {return LJ;}
+	size_type2 size() const {return rows()*cols()*sizeof(double);}
+
+	const double *data() const {return &_elem[0][0];}
+	const double *begin() const {return &_elem[0][0];}
+	const double *end() const {return &(_elem[0][0]) + rows()*cols();}
+
+	double &operator()(int i, int j) {return _elem[i][j];}
+	const double &operator()(int i, int j) const {return _elem[i][j];}
+
+	L_CommaListParser<double,LI*LJ> defineCommas() {return L_CommaListParser<double,LI*LJ>(&(_elem[0][0]));}
+
+	double &elem_deb(int i, int j) {throw_L_ArgException_if(i<0 || j<0 || i>=rows() || j>=cols() , "L_StaticMatrix::elem_deb() : indexes fuera de la matriz"); return _elem[i][j];}
+
+	void swap(L_StaticMatrix<LI,LJ> &other) {L_StaticMatrix<LI,LJ> t = other; other = *this; *this = t;}
+
+	bool inverseOf(const L_StaticMatrix &other) {*this = other; return invertMe();}
+
+	void copyOn(L_Matrix &m) {m.conservativeResize(LI,LJ); for (int i=0; i<LI; i++) for (int j=0; j<LJ; j++) m(i,j) = (*this)(i,j);}
+
+	bool invertMe()  // Tal vez la saque
+	{
+		int i, j, c;
+		double factor;
+		double temp;
+		throw_L_ArgException_if(rows()!=cols(), "L_StaticMatrix::invertMe()");
+		// Crear matriz unitaria other
+		L_StaticMatrix<LI,LJ> other;
+		for (i=0; i<rows(); i++)
+			for (j=0; j<cols(); j++)
+				other._elem[i][j] = (i==j);
+
+		for (c=0; c<cols(); c++) // Limpiar columna c
+		{
+			if (_elem[c][c]==0) // Diagonal con zero, intercambiar por other fila mas abajo que c
+			{
+				for (i=c+1; i<rows(); i++) // Encontrar fila i con _elemento != 0 en la columna c
+					if (_elem[i][c]!=0)
+						break;
+				if (i == rows()) // fila i solo contiene _elementos zero para j>=c
+					return false;
+				for (j=0; j<c; j++) // intercambiar fila c por fila i. Notar que _elem[i][j] = 0 para j<c
+				{
+					temp = other._elem[i][j];
+					other._elem[i][j]=other._elem[c][j];
+					other._elem[c][j] = temp;
+				}
+				for (; j<cols(); j++) // intercambiar
+				{
+					temp = other._elem[i][j];
+					other._elem[i][j]=other._elem[c][j];
+					other._elem[c][j] = temp;
+					temp = _elem[i][j];
+					_elem[i][j]=_elem[c][j];
+					_elem[c][j] = temp;
+				}
+			}
+			// Amplificar fila c para que quede con 1 en la diagonal
+			factor = 1 / _elem[c][c];
+			for (j=0; j<c; j++)
+			{
+				other._elem[c][j]*=factor;
+			}
+			for (; j<cols(); j++)
+			{
+				_elem[c][j]*=factor;
+				other._elem[c][j]*=factor;
+			}
+			// Restarla a las otras filas para dejar la columna c "unitaria"
+			for (i=0; i<cols(); i++)
+			{
+				if (i==c)
+					continue;
+				factor = -_elem[i][c];
+				for (j=0; j<c; j++)
+					other._elem[i][j]+=factor*other._elem[c][j];
+				for (; j<cols(); j++)
+				{
+					_elem[i][j]+=factor*_elem[c][j];
+					other._elem[i][j]+=factor*other._elem[c][j];
+				}
+			}
+		}
+		// La inversa esta en other
+		for (i=0; i<rows(); i++)
+			for (j=0; j<cols(); j++)
+				_elem[i][j] = other._elem[i][j];
+		return true;
+	}
+
+	void print(const char *name, FILE *fp=stdout) const
+	{
+		L_String str;
+		L_String str2;
+		int lar=0;
+		int i, j;
+		bool imprNom=false;
+
+		if (name!=NULL)
+		{
+			lar=(int)( strlen(name)+3 );
+			str.resize(lar+1);
+			str2.resize(lar+1);
+			strcpy(str.data(), name);
+			strcat(str.data(), " = ");
+			for (i=0; i<lar; i++)
+				str2[i]=' ';
+			str2[lar]=0;
+		}
+
+		for (i=0; i<rows(); i++)
+		{
+			if (str.size()!=0)
+			{
+				if (imprNom==false && i>=rows()/2)
+				{
+					fprintf(fp, "%s", str.c_str());
+					imprNom=true;
+				}
+				else
+					fprintf(fp, "%s", str2.c_str());
+			}
+			fprintf(fp,"[");
+			for (j=0; j<cols(); j++)
+				fprintf(fp, "%+.3g  ", _elem[i][j]);
+			fprintf(fp,"]\n");
+		}
+		fprintf(fp,"\n");
+	}
+
+	void printMatlabFormat(FILE *fp, const char *name) const
+	{
+		int i, j;
+		fprintf(fp, "%s = [", name);
+		for (i=0; i<rows(); i++)
+		{
+			for (j=0; j<cols(); j++)
+			{
+				if (_elem[i][j] == _elem[i][j])
+					fprintf(fp, "%.10g, ", _elem[i][j]);
+				else
+					fprintf(fp, "NaN, ");
+			}
+			fprintf(fp,";");
+		}
+		fprintf(fp,"];\n");
+	}
+};
 
 
 // Expression templates
