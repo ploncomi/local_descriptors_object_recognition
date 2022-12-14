@@ -1,6 +1,8 @@
 #ifdef __COMPAT_CVMAT__
 #include "L_CvSift.h"
 
+// Works with opencv 4.4+
+
 bool L_CvSift::calcPuntInt_act()
 {
 	return false;
