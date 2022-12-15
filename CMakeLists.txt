@@ -1,3 +1,4 @@
+# In windows, build as:
 # cmake .. -DOpenCV_DIR=c:/opencv/build
 
 cmake_minimum_required(VERSION 3.5)
@@ -18,6 +19,12 @@ set(PROJECT_SOURCES
         L_RecPuntInt/L_GenPuntInt.cpp
         L_RecPuntInt/L_RecPuntInt.cpp
         L_RecPuntInt/siftImpl/L_CvSift.cpp
+        flann/flann.cpp
+        flann/algorithms/dist.cpp
+        flann/algorithms/NNIndex.cpp
+        flann/util/Logger.cpp
+        flann/util/Random.cpp
+        flann/nn/Testing.cpp
         simple_interface.cpp
         main.cpp
 )

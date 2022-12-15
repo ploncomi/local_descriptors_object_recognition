@@ -30,8 +30,11 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 
+#include "flann/flann.h"
 
-//#include "../flann/flann.h"
+#define FLANN_H
+
+
 //#include "../RobHessSift/imgfeatures.h"
 
 ////////////////////////////////////

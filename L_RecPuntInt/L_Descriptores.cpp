@@ -4008,11 +4008,12 @@ bool L_Flann::createFrom(L_DescriptorLista &desc)
 	desc.copia_a_arreglo(desArr);
 	desc.clear();
 	data.resize(desArr.size() * nt);
-	data.adjustMemDown();
+	//data.adjustMemDown();
 	for (i=0; i<desArr.size(); i++)  // = desArr.size()
 		for (j=0; j<nt; j++)
 			data[i*nt+j] = (float)desArr[i].vector[j];
-	index = flann_build_index(data.elem, desArr.size(), nt, &speedup, &flannParams);
+	//index = flann_build_index(data.elem, desArr.size(), nt, &speedup, &flannParams);
+	index = flann_build_index(data.data(), desArr.size(), nt, &speedup, &flannParams);
 	if (index == NULL)
 		return false;
 	return true;
@@ -4048,7 +4049,8 @@ void L_Flann::findNearest_anyObject(const L_Descriptor &orig, int n, std::vector
 		return;
 
 	checks = flannParams.checks; // 50 o flannParams.checks
-	flann_find_nearest_neighbors_index(index, testset.elem, 1, indices.elem, dists.elem, n, checks, &flannParams);
+	//flann_find_nearest_neighbors_index(index, testset.elem, 1, indices.elem, dists.elem, n, checks, &flannParams);
+	flann_find_nearest_neighbors_index(index, testset.data(), 1, indices.data(), dists.data(), n, checks, &flannParams);
 	for (i=0; i<n; i++)
 	{
 		dest[i] = &desArr[indices[i]];
@@ -4070,7 +4072,8 @@ void L_Flann::encuentraMasCercanos(std::vector<L_Descriptor> &orig, int n, std::
 	int i, j, checks;
 	for (i=0; i<n*orig.size(); i++)
 		dest[i] = NULL;
-	if (index==NULL || orig.elem == NULL)
+	//if (index==NULL || orig.elem == NULL)
+	if (index == NULL || orig.data() == NULL)
 		return;
 	int nt = orig[0].nt;
 	std::vector<float> testset(orig.size()*nt);
@@ -4081,7 +4084,8 @@ void L_Flann::encuentraMasCercanos(std::vector<L_Descriptor> &orig, int n, std::
 			testset[i*nt+j] = (float)orig[i].vector[j];
 
 	checks = flannParams.checks; // 50 o flannParams.checks
-	flann_find_nearest_neighbors_index(index, testset.elem, orig.size(), indices.elem, dists.elem, n, flannParams.checks, &flannParams);
+	//flann_find_nearest_neighbors_index(index, testset.elem, orig.size(), indices.elem, dists.elem, n, flannParams.checks, &flannParams);
+	flann_find_nearest_neighbors_index(index, testset.data(), orig.size(), indices.data(), dists.data(), n, flannParams.checks, &flannParams);
 
 	for (i=0; i<orig.size(); i++)
 	{

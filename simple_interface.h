@@ -19,6 +19,10 @@ struct Detection
 	double myx;
 	double myy;
 	double ty;
+	double cx;
+	double cy;
+	double w;
+	double h;
 	std::string label;
 };
 
@@ -34,7 +38,8 @@ public:
 	bool initialized_;
 	bool trained_;
 	L_CvSift sift_;
-	L_KdTreeBBF kdtree_;
+	//L_KdTreeBBF kdtree_;
+	L_Flann kdtree_;
 	L_GenTransfAfinHough hough_;
 	L_RecPuntInt rec_;
 
