@@ -13,16 +13,16 @@
 
 struct Detection
 {
-	double mxx;
-	double mxy;
-	double tx;
-	double myx;
-	double myy;
-	double ty;
-	double cx;
-	double cy;
-	double w;
-	double h;
+	double mxx; // Affine transform coefficient
+	double mxy; // Affine transform coefficient
+	double tx;  // Affine transform (translation in x)
+	double myx; // Affine transform coefficient
+	double myy; // Affine transform coefficient
+	double ty;  // Affine transform (translation in y)
+	double cx;  // Object's center
+	double cy;  // Object's center
+	double w;   // Width of bounding box
+	double h;   // Height of bounding box
 	std::string label;
 };
 
