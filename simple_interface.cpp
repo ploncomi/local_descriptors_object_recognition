@@ -78,6 +78,7 @@ cv::Mat SimpleInterface::detect(cv::Mat img, std::vector<Detection>& detections)
 		double y2 = std::max(std::max(p1y, p2y), std::max(p3y, p4y));
 		det.w = x2 - x1;
 		det.h = y2 - y1;
+		det.label = labels_[ptr->c->calL.root->c.dRef->nobj];
 		detections.push_back(det);
 	}
 
